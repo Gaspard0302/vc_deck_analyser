@@ -6,6 +6,7 @@ class DeckAnalysisState(TypedDict):
     whole_text: str # input (should not be modified by agents)
     page_feedback: List[Dict[str, Any]] # output
     topics: List[Dict[str, Any]] # output
+    tam_sam_info: str # output
 
 
 

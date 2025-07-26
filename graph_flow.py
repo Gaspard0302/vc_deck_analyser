@@ -16,6 +16,7 @@ def run_vc_analysis(page_content: List[Dict[str, Any]], whole_text: str) -> Deck
         "whole_text": whole_text,
         "page_feedback": [],
         "topics": [],
+        "tam_sam_info": "",
     }
 
     flow = StateGraph(DeckAnalysisState)
