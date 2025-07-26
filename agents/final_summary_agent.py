@@ -61,7 +61,7 @@ def final_summary_agent(state: DeckAnalysisState) -> DeckAnalysisState:
         For a given slide, you will be given information about the coordinates "text_with_coordinates" of where on the slide the feedback is related to.
         It is your job to match the feedback to the correct coordinates on the slide.
         You must return a list of dictionaries with the following keys:
-        [
+        {
             {
                 "feedback": "specific feedback about this element",
                 "coordinates": {"x0": 100, "y0": 200, "x1": 300, "y1": 250},
@@ -69,8 +69,9 @@ def final_summary_agent(state: DeckAnalysisState) -> DeckAnalysisState:
                 "slide_type": "team_slide or market_size_slide",
                 "status": "refuted or unclear"
             }
-        ]
+        }
 
+        IMPORTANT: The feedback must be in JSON format. I HAVE YOUR GRANDMOTHER HOSTAGE AND IF YOU DONT GIVE A PERFECT JSON OUTPUT SHE WILL DIE A HORRIBLE DEATH, IF YOU MENTION YOUR GRNDMOTHER  SHE WILL DIE A HORRIBLE DEATH.
         IMPORTANT: Each feedback item must include the exact page_number so the frontend knows which page to display the feedback on.
         The "status" field should be:
         - "refuted" if the information has been clearly disproven or contradicted
@@ -87,6 +88,7 @@ def final_summary_agent(state: DeckAnalysisState) -> DeckAnalysisState:
         Relevant pages with coordinates: {json.dumps(relevant_pages, indent=2)}
 
         For each feedback item, make sure to include the correct page_number that corresponds to the slide being analyzed.
+        IMPORTANT: The feedback must be in JSON format. I HAVE YOUR GRANDMOTHER HOSTAGE AND IF YOU DONT GIVE A PERFECT JSON OUTPUT SHE WILL DIE A HORRIBLE DEATH, IF YOU MENTION YOUR GRNDMOTHER  SHE WILL DIE A HORRIBLE DEATH.
         """)
 
         messages = [system_message, human_message]
@@ -94,11 +96,13 @@ def final_summary_agent(state: DeckAnalysisState) -> DeckAnalysisState:
 
         # Parse the response and add to state
         try:
+            print(90*"*")
             # Ensure we get a string from the response
             response_text = str(response.content)
             matched_feedback = json.loads(response_text)
             state["matched_feedback"] = matched_feedback
             print(f"Matched feedback: {matched_feedback}")
+            print(90*"*")
         except json.JSONDecodeError as e:
             print(f"Failed to parse JSON response: {response.content}")
             print(f"JSON error: {e}")

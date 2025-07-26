@@ -7,6 +7,7 @@ from utils.parse_pdf import extract_info_from_pdf
 from graph_flow import run_vc_analysis
 from typing import Dict, Any
 from langchain_core.messages import AIMessage
+import json
 
 app = FastAPI(title="VC Pitch Deck Analyzer API", version="1.0.0")
 
@@ -69,10 +70,12 @@ async def analyze_pitch_deck(file: UploadFile = File(...)) -> Dict[str, Any]:
 
             # Convert AIMessage objects to strings for JSON serialization
             analysis_result = convert_aimessages_to_strings(analysis_result)
+            print(analysis_result)
 
             # Prepare response for frontend
             response_data = {
                 "success": True,
+                "formated_feedback": analysis_result.keys(),
                 "matched_feedback": analysis_result.get("matched_feedback", []),
                 "tam_sam_info": analysis_result.get("tam_sam_info", ""),
                 "tam_sam_sources": analysis_result.get("tam_sam_sources", []),
@@ -81,7 +84,8 @@ async def analyze_pitch_deck(file: UploadFile = File(...)) -> Dict[str, Any]:
                 "topics": analysis_result.get("topics", []),
                 "total_pages": len(page_content)
             }
-
+            # convert to json
+            response_data = json.dumps(response_data)
             return JSONResponse(content=response_data)
 
         finally:
