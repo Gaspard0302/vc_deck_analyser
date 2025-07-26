@@ -1,6 +1,7 @@
 from langgraph.graph import StateGraph
 from typing import TypedDict, List, Dict, Any, Optional
 from agents.tam_sam_agent import tam_sam_agent
+from agents.team_slide_agent import team_slide_agent
 from agents.topic_extract import topic_extractor_agent
 from dotenv import load_dotenv
 from state_types import DeckAnalysisState
@@ -17,18 +18,18 @@ def run_vc_analysis(page_content: List[Dict[str, Any]], whole_text: str) -> Deck
         "topics": [],
     }
 
-
-
-
-
     flow = StateGraph(DeckAnalysisState)
 
+    # Add nodes
     flow.add_node("topic_extractor_agent", topic_extractor_agent)
     flow.add_node("tam_sam_agent", tam_sam_agent)
+    flow.add_node("team_slide_agent", team_slide_agent)
 
+    # Simple sequential flow
     flow.add_edge(START, "topic_extractor_agent")
     flow.add_edge("topic_extractor_agent", "tam_sam_agent")
-    flow.add_edge("tam_sam_agent", END)
+    flow.add_edge("tam_sam_agent", "team_slide_agent")
+    flow.add_edge("team_slide_agent", END)
 
     built_flow = flow.compile()
     final_state = built_flow.invoke(initial_state)

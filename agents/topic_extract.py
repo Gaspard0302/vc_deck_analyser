@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import SystemMessage, HumanMessage
+from typing import List, Dict, Any
 
 load_dotenv()
 
@@ -41,9 +42,53 @@ def topic_extractor_agent(state: DeckAnalysisState) -> DeckAnalysisState:
 
         topics.append({
             "page_number": page_number+1,
-            "topic": response.content.strip()
+            "topic": response.content.strip(),
+            "page_text": page_text
         })
 
     state["topics"] = topics
     print(state["topics"])
     return state
+
+def route_by_topic(state: DeckAnalysisState) -> List[str]:
+    """
+    Router function that determines which agents to call based on the extracted topics.
+    Returns a list of agent names to run in sequence.
+    """
+    topics = state.get("topics", [])
+    agents_to_run = []
+
+    # Check if any page has market_size_slide topic
+    for topic_info in topics:
+        if topic_info.get("topic") == "market_size_slide":
+            agents_to_run.append("tam_sam_agent")
+            break
+
+    # Check if any page has team_slide topic
+    for topic_info in topics:
+        if topic_info.get("topic") == "team_slide":
+            agents_to_run.append("team_slide_agent")
+            break
+
+    # If no specific agents found, return end
+    if not agents_to_run:
+        return ["end"]
+
+    return agents_to_run
+
+def get_relevant_pages(state: DeckAnalysisState, target_topic: str) -> List[Dict[str, Any]]:
+    """
+    Helper function to get pages relevant to a specific topic.
+    """
+    topics = state.get("topics", [])
+    relevant_pages = []
+
+    for topic_info in topics:
+        if topic_info.get("topic") == target_topic:
+            relevant_pages.append({
+                "page_number": topic_info.get("page_number"),
+                "text": topic_info.get("page_text"),
+                "topic": topic_info.get("topic")
+            })
+
+    return relevant_pages
