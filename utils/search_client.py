@@ -8,14 +8,14 @@ except ImportError:
 
 tavily_client = TavilyClient(api_key=TAVILY_API_KEY)
 
-def search_tavily(query):
+def search_tavily(query, max_results=2):
     """Search using Tavily API
     Args:
         query: str - The search query
     Returns:
         dict - The search response from Tavily
     """
-    response = tavily_client.search(query)
+    response = tavily_client.search(query, max_results=max_results)
     return response
 
 if __name__ == "__main__":

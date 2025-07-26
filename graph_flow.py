@@ -6,12 +6,17 @@ from agents.topic_extract import topic_extractor_agent
 from dotenv import load_dotenv
 from state_types import DeckAnalysisState
 from langgraph.constants import START, END
+from utils.llm import llm
+from langchain_core.messages import HumanMessage
 
 load_dotenv()
 
 
 def run_vc_analysis(page_content: List[Dict[str, Any]], whole_text: str) -> DeckAnalysisState:
+    general_context_prompt = f"You are a venture capitalist firm that is analyzing a pitch deck for a startup. You are given the page content of the pitch deck and the whole text of the pitch deck. You need to give short and descriptive usmmary of the goal and solution: {whole_text}"
+    general_context = llm.invoke([HumanMessage(content=general_context_prompt)])
     initial_state = {
+        "general_context": general_context,
         "page_content": page_content,
         "whole_text": whole_text,
         "page_feedback": [],

@@ -15,7 +15,7 @@ def generate_text(prompt):
         max_tokens=4000,
         messages=[{"role": "user", "content": prompt}]
     )
-    return response.content[0].text
+    return response.content[0].textP
 
 def query_pdf_page(pdf_page_number: int, prompt: str, pdf_path: str):
     """Query Claude with a specific page from a PDF document
