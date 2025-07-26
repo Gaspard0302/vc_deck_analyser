@@ -126,6 +126,6 @@ def query_image(prompt: str, image_path: str):
     return response.content[0].text
 
 
-# if __name__ == "__main__":
-#     print(query_pdf_page(1, "What is the main idea of the pitch?", "test_pitch_solea.pdf"))
+if __name__ == "__main__":
+    print(query_pdf_page(1, "What is the main idea of the pitch?", "test_pitch_solea.pdf"))
 #     print(generate_text("test"))
