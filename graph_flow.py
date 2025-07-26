@@ -14,7 +14,7 @@ def run_vc_analysis(page_content: List[Dict[str, Any]], whole_text: str) -> Deck
         "page_content": page_content,
         "whole_text": whole_text,
         "page_feedback": [],
-        "topic_feedback": [],
+        "topics": [],
     }
 
 

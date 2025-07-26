@@ -5,7 +5,7 @@ class DeckAnalysisState(TypedDict):
     page_content: List[Dict[str, Any]] # input
     whole_text: str # input
     page_feedback: List[Dict[str, Any]] # output
-    topic_feedback: List[str] # output
+    topics: List[str] # output
 
 
 
