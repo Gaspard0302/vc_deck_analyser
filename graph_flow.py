@@ -13,8 +13,8 @@ def run_vc_analysis(page_content: List[Dict[str, Any]], whole_text: str) -> Deck
     initial_state = {
         "page_content": page_content,
         "whole_text": whole_text,
-        "page_feedback": List[Dict[str, Any]],
-
+        "page_feedback": [],
+        "topic_feedback": [],
     }
 
 

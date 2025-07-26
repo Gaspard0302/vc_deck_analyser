@@ -5,3 +5,5 @@ pydantic
 langgraph
 tavily-python
 dotenv
+langchain_core
+langchain_anthropic
