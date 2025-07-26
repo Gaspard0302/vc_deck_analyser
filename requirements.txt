@@ -3,5 +3,5 @@ pymupdf
 anthropic
 pydantic
 langgraph
-tavily
+tavily-python
 dotenv
