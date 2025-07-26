@@ -1,0 +1,7 @@
+fastapi
+pymupdf
+anthropic
+pydantic
+langgraph
+tavily
+dotenv
