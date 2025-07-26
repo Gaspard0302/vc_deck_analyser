@@ -49,6 +49,7 @@ def run_vc_analysis(page_content: List[Dict[str, Any]], whole_text: str) -> Deck
     png_data = built_flow.get_graph().draw_mermaid_png()
     with open("agent_graph.png", "wb") as f:
         f.write(png_data)
+        
     return final_state
 
 
