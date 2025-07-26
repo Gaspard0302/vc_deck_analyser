@@ -42,7 +42,7 @@ def topic_extractor_agent(state: DeckAnalysisState) -> DeckAnalysisState:
 
         topics.append({
             "page_number": page_number+1,
-            "topic": response.content.strip(),
+            "topic": str(response.content).strip(),
             "page_text": page_text
         })
 

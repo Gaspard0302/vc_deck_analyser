@@ -1,20 +1,23 @@
 from langgraph.graph import StateGraph
 from typing import TypedDict, List, Dict, Any, Optional
 from agents.tam_sam_agent import tam_sam_agent
-from agents.team_slide_agent import team_slide_agent
+from agents.team_slide_agent import founders_background_agent
 from agents.topic_extract import topic_extractor_agent
+from agents.final_summary_agent import final_summary_agent
 from dotenv import load_dotenv
 from state_types import DeckAnalysisState
 from langgraph.constants import START, END
-from utils.llm import llm
 from langchain_core.messages import HumanMessage
+from langchain_anthropic import ChatAnthropic
 
 load_dotenv()
 
+llm = ChatAnthropic(model="claude-3-5-sonnet-20240620", temperature=0)
 
 def run_vc_analysis(page_content: List[Dict[str, Any]], whole_text: str) -> DeckAnalysisState:
     general_context_prompt = f"You are a venture capitalist firm that is analyzing a pitch deck for a startup. You are given the page content of the pitch deck and the whole text of the pitch deck. You need to give short and descriptive usmmary of the goal and solution: {whole_text}"
-    general_context = llm.invoke([HumanMessage(content=general_context_prompt)])
+    general_context_response = llm.invoke([HumanMessage(content=general_context_prompt)])
+    general_context = general_context_response.content
     initial_state = {
         "general_context": general_context,
         "page_content": page_content,
@@ -22,6 +25,8 @@ def run_vc_analysis(page_content: List[Dict[str, Any]], whole_text: str) -> Deck
         "page_feedback": [],
         "topics": [],
         "tam_sam_info": "",
+        "tam_sam_sources": [],
+        "matched_feedback": [],
     }
 
     flow = StateGraph(DeckAnalysisState)
@@ -29,13 +34,14 @@ def run_vc_analysis(page_content: List[Dict[str, Any]], whole_text: str) -> Deck
     # Add nodes
     flow.add_node("topic_extractor_agent", topic_extractor_agent)
     flow.add_node("tam_sam_agent", tam_sam_agent)
-    flow.add_node("team_slide_agent", team_slide_agent)
-
+    flow.add_node("team_slide_agent", founders_background_agent)
+    flow.add_node("final_summary_agent", final_summary_agent)
     # Simple sequential flow
     flow.add_edge(START, "topic_extractor_agent")
     flow.add_edge("topic_extractor_agent", "tam_sam_agent")
     flow.add_edge("tam_sam_agent", "team_slide_agent")
-    flow.add_edge("team_slide_agent", END)
+    flow.add_edge("team_slide_agent", "final_summary_agent")
+    flow.add_edge("final_summary_agent", END)
 
     built_flow = flow.compile()
     final_state = built_flow.invoke(initial_state)
